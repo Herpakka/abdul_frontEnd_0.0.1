@@ -1,15 +1,16 @@
 // src/components/FileUpload.js
 import React, { useState, useRef } from 'react';
-import { 
-  CloudArrowUpIcon, 
-  DocumentIcon, 
+import {
+  CloudArrowUpIcon,
+  DocumentIcon,
   XMarkIcon,
-  PhotoIcon 
+  PhotoIcon
 } from '@heroicons/react/24/outline';
+import axios from 'axios';
 
-const FileUpload = ({ 
-  onFilesSelected, 
-  maxFiles = 5, 
+const FileUpload = ({
+  onFilesSelected,
+  maxFiles = 5,
   maxSize = 25, // MB
   acceptedTypes = ['application/pdf', '.doc', '.docx', '.txt', 'xlsx', 'csv']
 }) => {
@@ -17,6 +18,7 @@ const FileUpload = ({
   const [files, setFiles] = useState([]);
   const [error, setError] = useState('');
   const inputRef = useRef(null);
+  const [currentSource, setCurrentSource] = useState()
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -32,7 +34,7 @@ const FileUpload = ({
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFiles(e.dataTransfer.files);
     }
@@ -48,7 +50,7 @@ const FileUpload = ({
   const handleFiles = (fileList) => {
     setError('');
     const newFiles = Array.from(fileList);
-    
+
     // Validate file count
     if (files.length + newFiles.length > maxFiles) {
       setError(`Maximum ${maxFiles} files allowed`);
@@ -92,24 +94,42 @@ const FileUpload = ({
     return <DocumentIcon className="h-5 w-5 text-gray-500" />;
   };
 
-  const upload = async(file) => {
-    if(!file.length){
+  const upload = async (file) => {
+    if (!file.length) {
       return alert('Please choose a file to upload')
     }
 
     const formData = new FormData()
-    
+
+    formData.append('test', file[0])
+
+    const source = axios.CancelToken.source()
+    setCurrentSource(source)
+
+    try {
+      const res = await axios.post('http://localhost:3001/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        cancelToken: source.token
+      })
+    } catch (error) {
+      if (axios.isCancel(error)) {
+        console.log('upload is cancel')
+      } else {
+        alert('Error upload file.')
+      }
+    }
   }
 
   return (
     <div className="w-full max-w-2xl mx-auto">
       {/* Drop Zone */}
       <div
-        className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${
-          dragActive
+        className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${dragActive
             ? 'border-blue-500 bg-blue-50'
             : 'border-gray-300 hover:border-gray-400'
-        }`}
+          }`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
@@ -171,7 +191,7 @@ const FileUpload = ({
           <h3 className="text-sm font-medium text-gray-700">
             Uploaded Files ({files.length})
           </h3>
-          
+
           <div className="space-y-2">
             {files.map((file, index) => (
               <div
@@ -189,7 +209,7 @@ const FileUpload = ({
                     </p>
                   </div>
                 </div>
-                
+
                 <button
                   onClick={() => removeFile(index)}
                   className="p-1 text-gray-400 hover:text-red-500 transition-colors"
