@@ -1,21 +1,10 @@
 // src/App.js
-import React, { useState } from "react";
-import { Routes, Route, Link, Outlet, Navigate } from "react-router-dom";
-import {
-  Bars3Icon,
-  XMarkIcon,
-  UserCircleIcon,
-  HomeIcon,
-} from "@heroicons/react/24/outline";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/login";
 import Register from "./pages/register";
 import Home from "./pages/home";
 
 export default function App() {
-  /* sidebar state */
-  const [open, setOpen] = useState(true);
-  const toggle = () => setOpen((prev) => !prev);
-
   return (
     <div className="flex h-screen w-screen overflow-hidden">
       <Routes>

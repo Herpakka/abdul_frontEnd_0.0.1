@@ -1,0 +1,225 @@
+.routed-page {
+  background: linear-gradient(135deg, #1a0d2e 0%, #2d1b4e 50%, #1f0c33 100%);
+}
+
+.sidebar {
+  background: linear-gradient(180deg, #2a1f3d 0%, #1f1829 100%);
+  border-right: 1px solid #3c2a5c;
+  box-shadow: 2px 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.header {
+  background: linear-gradient(90deg, #3c2a5c 0%, #2d1b4e 100%);
+  color: #e0d4f0;
+  padding: 18px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid #4d3866;
+}
+
+.header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: #ff6b35;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.new-chat-btn {
+  background: linear-gradient(135deg, #ff6b35 0%, #e55a2b 100%);
+  color: white;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.new-chat-btn:hover {
+  background: linear-gradient(135deg, #e55a2b 0%, #cc4e24 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(255, 107, 53, 0.4);
+}
+
+.chat-area {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+/* chatbar */
+.input-container {
+  padding: 24px 32px;
+  background: linear-gradient(
+    135deg,
+    rgba(42, 31, 61, 0.9) 0%,
+    rgba(31, 24, 41, 0.9) 100%
+  );
+  backdrop-filter: blur(20px);
+  border-top: 1px solid #3c2a5c;
+}
+
+.input-wrapper {
+  display: flex;
+  gap: 12px;
+  background: rgba(92, 69, 117, 0.4);
+  border-radius: 24px;
+  padding: 8px;
+  align-items: center;
+  border: 2px solid rgba(107, 82, 132, 0.5);
+  transition: border-color 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.input-wrapper:focus-within {
+  border-color: #ff6b35;
+  box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+}
+
+.upload-btn {
+  background: rgba(255, 107, 53, 0.2);
+  color: #ff6b35;
+  border: none;
+  padding: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 107, 53, 0.3);
+}
+
+.upload-btn:hover {
+  background: rgba(255, 107, 53, 0.3);
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
+}
+
+.upload-btn.has-file {
+  background: rgba(255, 107, 53, 0.4);
+  border-color: #ff6b35;
+}
+
+.chat-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 14px 18px;
+  font-size: 15px;
+  background: transparent;
+  color: #e0d4f0;
+  font-family: inherit;
+}
+
+.chat-input::placeholder {
+  color: #a693b8;
+}
+
+.send-btn {
+  background: linear-gradient(135deg, #ff6b35 0%, #e55a2b 100%);
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  height: 48px;
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+}
+
+.send-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(255, 107, 53, 0.5);
+}
+
+.send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.file-preview {
+  background: rgba(92, 69, 117, 0.3);
+  border: 1px solid rgba(107, 82, 132, 0.5);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #e0d4f0;
+  font-size: 14px;
+}
+
+.file-preview .file-info {
+  flex: 1;
+}
+
+.file-preview .file-name {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.file-preview .file-size {
+  color: #a693b8;
+  font-size: 12px;
+}
+
+.file-preview .remove-file {
+  background: rgba(255, 107, 53, 0.2);
+  color: #ff6b35;
+  border: none;
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.file-preview .remove-file:hover {
+  background: rgba(255, 107, 53, 0.3);
+  transform: scale(1.1);
+}
+
+.welcome-message {
+  text-align: center;
+  color: #a693b8;
+  font-size: 18px;
+  margin-top: 120px;
+}
+
+.welcome-message h2 {
+  color: #e0d4f0;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.welcome-message p {
+  font-size: 16px;
+  opacity: 0.8;
+}

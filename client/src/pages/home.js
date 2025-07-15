@@ -6,7 +6,11 @@ import {
     XMarkIcon,
     UserCircleIcon,
     HomeIcon,
+    PlusCircleIcon,
+    MagnifyingGlassIcon
 } from "@heroicons/react/24/outline";
+import '../css/home.css'; // Assuming you have a CSS file for home styles
+
 import ChatPage from "./home/chatPage";
 import ChatManagePage from "./home/managePage";
 
@@ -18,12 +22,13 @@ export default function Home() {
             {/* === Sidebar === */}
             <aside
                 className={`${open ? "w-56" : "w-14"
-                    } bg-violet-900 text-violet-100 transition-all duration-200`}
+                    } sidebar text-violet-100 transition-all duration-200`}
             >
-                {/* top-left menu button */}
+                {/* top-left menu button - now matches header height */}
                 <button
                     onClick={toggle}
-                    className="p-3 focus:outline-none hover:bg-violet-800 w-full flex items-center justify-center"
+                    className={`py-4 px-4 focus:outline-none hover:bg-violet-800 w-full flex items-center ${open ? "justify-end" : "justify-center"}`}
+                    style={{ height: '72px' }} // Same height as header (16px padding * 2 + content height)
                 >
                     {open ? (
                         <XMarkIcon className="h-6 w-6" />
@@ -35,20 +40,29 @@ export default function Home() {
                 {/* nav links only when open */}
                 {open && (
                     <nav className="mt-4 flex flex-col gap-2 px-2">
-                        <Link
-                            to=""
+                        <button
+                            className="new-chat-btn"
+                        >
+                            <PlusCircleIcon className="h-5 w-5" />
+                            <span>New chat</span>
+                        </button>
+                        <button
                             className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-violet-800"
                         >
-                            <HomeIcon className="h-5 w-5" />
-                            <span>Chat</span>
-                        </Link>
-                        <Link
-                            to="chatmanage"
-                            className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-violet-800"
-                        >
-                            <UserCircleIcon className="h-5 w-5" />
-                            <span>Manage</span>
-                        </Link>
+                            <MagnifyingGlassIcon className="h-5 w-5" />
+                            <span>Search</span>
+                        </button>
+                        <div className="flex flex-col overflow-y-auto max-h-[calc(100vh-200px)] mt-2 pr-1">
+                            <span className="text-sm font-semibold text-violet-300 px-3 mb-1">Chats</span>
+                            {Array.from({ length: 50 }, (_, index) => (
+                                <button
+                                    key={index}
+                                    className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-violet-800 text-left"
+                                >
+                                    <span>Chat {index + 1}</span>
+                                </button>
+                            ))}
+                        </div>
                     </nav>
                 )}
             </aside>
@@ -56,11 +70,11 @@ export default function Home() {
             {/* === Main content wrapper === */}
             <section className="flex flex-col flex-1 overflow-hidden">
                 {/* Navbar */}
-                <header className="flex items-center justify-between bg-violet-800 text-white px-4 h-14 shadow-md">
+                <header className="header">
                     {/* left-aligned "home" logo/title */}
                     <Link to="" className="flex items-center gap-2 font-semibold">
                         <HomeIcon className="h-6 w-6" />
-                        <span className="hidden sm:inline">Home</span>
+                        <h1 className="hidden sm:inline">Home</h1>
                     </Link>
 
                     {/* right-aligned profile icon */}
@@ -70,10 +84,12 @@ export default function Home() {
                 </header>
 
                 {/* Routed pages */}
-                <main className="flex-1 overflow-y-auto bg-slate-100 p-6">
+                <main 
+                    className="routed-page flex-1 overflow-y-auto"
+                >
                     <Routes>
-                        <Route index element={<ChatPage />} />
-                        <Route path="chatmanage" element={<ChatManagePage/>} />
+                        <Route index element={<ChatManagePage />} />
+                        <Route path="chatmanage" element={<ChatManagePage />} />
                         <Route
                             path="*"
                             element={<div className="text-center text-lg">Not Found</div>}
