@@ -7,9 +7,9 @@ import {
   UserCircleIcon,
   HomeIcon,
 } from "@heroicons/react/24/outline";
-import Login from "./pages/login";
-import Register from "./pages/register";
-import Home from "./pages/home";
+import LoginPage from "./pages/login";
+import RegisterPage from "./pages/regis";
+import HomePage from "./pages/home";
 
 export default function App() {
   /* sidebar state */
@@ -20,9 +20,9 @@ export default function App() {
     <div className="flex h-screen w-screen overflow-hidden">
       <Routes>
             <Route path="/" element={<Navigate to="/home" />} />
-            <Route path="/home" element={<Home />}/>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/home" element={<HomePage />}/>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             {/* 404 fallback */}
             <Route
               path="*"
