@@ -17,7 +17,7 @@ export default function App() {
   const toggle = () => setOpen((prev) => !prev);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden">
+    <div className="fixed flex h-screen w-screen overflow-hidden">
       <Routes>
             <Route path="/" element={<Navigate to="/home" />} />
             <Route path="/home" element={<HomePage />}/>
