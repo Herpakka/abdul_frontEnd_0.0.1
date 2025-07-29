@@ -38,8 +38,8 @@ export default function NavBar() {
     }, []);
 
     return (
-        <nav className="w-screen bg-gradient-to-r from-purple-900 via-purple-800 to-purple-900 px-6 py-4 flex items-center justify-between border-b border-purple-700/50 backdrop-blur-sm">
-            <div className="text-orange-400 font-bold text-xl drop-shadow-md">ABDUL</div>
+        <nav className="w-full bg-gradient-to-r from-purple-900 via-purple-800 to-purple-900 px-6 py-4 flex items-center justify-between border-b border-purple-700/50 backdrop-blur-sm">
+            <div className="text-orange-400 font-bold text-xl drop-shadow-md">แขมร ซี อัจ</div>
             
             <div className="relative">
                 <button 
@@ -60,7 +60,7 @@ export default function NavBar() {
                 {isMenuOpen && (
                     <div 
                         ref={menuRef}
-                        className="absolute right-0 top-full mt-2 w-48 bg-purple-800/90 border border-purple-600/40 rounded-xl shadow-xl shadow-purple-900/50 backdrop-blur-xl z-50"
+                        className="absolute right-0 top-full mt-2 w-48 bg-purple-800/90 border border-purple-600/40 rounded-xl shadow-xl shadow-purple-900/50 backdrop-blur-xl z-10"
                     >
                         <div className="py-2">
                             {/* Profile */}

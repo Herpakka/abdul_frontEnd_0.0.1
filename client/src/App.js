@@ -10,6 +10,7 @@ import {
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/regis";
 import HomePage from "./pages/home";
+import AdminPage from "./pages/admin";
 
 export default function App() {
   /* sidebar state */
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/home" element={<HomePage />}/>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/admin" element={<AdminPage />} />
             {/* 404 fallback */}
             <Route
               path="*"

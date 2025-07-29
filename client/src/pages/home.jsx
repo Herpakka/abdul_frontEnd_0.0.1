@@ -11,15 +11,17 @@ export default function HomePage() {
 
     return (
         <div className="flex h-screen w-screen overflow-hidden">
-            <div className="min-h-screen flex flex-col w-full">
+            {/* Sidebar */}
+            <SideBar />
+
+            {/* Main content area */}
+            <div className="flex flex-col flex-1 min-w-0">
+                {/* Navbar */}
                 <NavBar />
-                <div className="flex flex-1">
-                    {/* Sidebar */}
-                    <SideBar />
-                    {/* Main content */}
-                    <div className="flex-1">
-                        <ChatRoomPage />
-                    </div>
+
+                {/* Content */}
+                <div className="flex-1 overflow-hidden">
+                    <ChatRoomPage />
                 </div>
             </div>
         </div>
