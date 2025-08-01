@@ -1,16 +1,51 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { LockClosedIcon, EnvelopeIcon } from '@heroicons/react/24/outline';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ email, password });
-    navigate('/home'); // Redirect to home page after login
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.post('/api/login', formData);
+      if (response.data.success){
+        Swal.fire({
+          title: 'Login Successful',
+          text: 'Welcome back!',
+          icon: 'success',
+          confirmButtonText: 'Continue',
+          didClose: () => {
+            navigate('/home'); // Redirect to home after successful login
+          }
+        });
+      } else {
+        Swal.fire({
+          title: 'Login Failed',
+          text: response.data.error || 'Please check your credentials.',
+          icon: 'error',
+          confirmButtonText: 'Try Again'
+        });
+        return;
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Login failed. Please check your credentials.');
+    } finally {
+      setLoading(false);
+      navigate('/home'); // Redirect to home after login
+    }
   };
 
   const handleRegisterClick = () => {
@@ -38,8 +73,8 @@ export default function LoginPage() {
             <input
               type="email"
             //   required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               placeholder="Email address"
               className="w-full pl-10 pr-4 py-3 rounded-xl bg-purple-900/60 border border-purple-600/40 focus:border-orange-400 text-sm placeholder-purple-400 outline-none focus:ring-2 focus:ring-orange-400/40 transition"
             />
@@ -51,8 +86,8 @@ export default function LoginPage() {
             <input
               type="password"
             //   required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               placeholder="Password"
               className="w-full pl-10 pr-4 py-3 rounded-xl bg-purple-900/60 border border-purple-600/40 focus:border-orange-400 text-sm placeholder-purple-400 outline-none focus:ring-2 focus:ring-orange-400/40 transition"
             />
@@ -79,6 +114,7 @@ export default function LoginPage() {
           </p>
         </div>
       </section>
+
     </main>
   );
 }

@@ -1,13 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   Bars3Icon, 
   XMarkIcon,
-  ChatBubbleLeftRightIcon,
   PlusIcon,
-  ClockIcon,
-  StarIcon,
-  Cog6ToothIcon
-} from '@heroicons/react/24/outline';
+  StarIcon} from '@heroicons/react/24/outline';
 
 export default function SideBar() {
   const [isOpen, setIsOpen] = useState(true);
