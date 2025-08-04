@@ -1,67 +1,55 @@
 const rateLimit = require('express-rate-limit');
-
-// Import the ipKeyGenerator helper function
 const { ipKeyGenerator } = require('express-rate-limit');
 
-// Registration rate limiter (FIXED)
-const registerLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // Max 5 registration attempts per IP
-    message: { 
-        error: 'Too many registration attempts. Please try again later.',
-        retryAfter: Math.ceil((15 * 60 * 1000) / 1000) // seconds
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-    // CORRECTED: Use ipKeyGenerator for IPv6 security
-    keyGenerator: (req) => {
-        // For authenticated users, you could use API key or user ID
-        // if (req.user?.id) return `user_${req.user.id}`;
-        
-        // For unauthenticated users, use secure IP handling
-        const ip = req.ip || req.connection.remoteAddress || '127.0.0.1';
-        return ipKeyGenerator(ip); // This handles IPv6 subnets securely
-    },
-    skipSuccessfulRequests: true
-});
-
-// Login rate limiter (FIXED)
-const loginLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 10, // Max 10 login attempts per IP
-    message: { 
-        error: 'Too many login attempts. Please try again later.',
-        retryAfter: Math.ceil((15 * 60 * 1000) / 1000)
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-    // CORRECTED: Use ipKeyGenerator for IPv6 security
-    keyGenerator: (req) => {
-        const ip = req.ip || req.connection.remoteAddress || '127.0.0.1';
-        return ipKeyGenerator(ip); // Secure IPv6 handling
-    },
-    skipSuccessfulRequests: true
-});
-
-// Alternative: More advanced keyGenerator with auth fallback
-const advancedKeyGenerator = (req) => {
-    // For authenticated users, use user ID (more accurate than IP)
-    if (req.user?.id) {
-        return `user_${req.user.id}`;
+// สร้าง rate limiter ที่ปรับตาม environment
+const createRateLimiter = (options = {}) => {
+    if (process.env.NODE_ENV === 'test') {
+        // ในโหมด test ใช้ rate limit ที่หลวมกว่า
+        return rateLimit({
+            windowMs: 2000,     // 2 seconds window
+            max: 100,           // 100 requests per window in test
+            skipSuccessfulRequests: true,
+            keyGenerator: (req) => {
+                const ip = req.ip || req.connection.remoteAddress || '127.0.0.1';
+                return ipKeyGenerator(ip);
+            },
+            ...options
+        });
     }
     
-    // For API key based requests
-    if (req.headers['x-api-key']) {
-        return `api_${req.headers['x-api-key']}`;
-    }
-    
-    // Fallback to secure IP handling for unauthenticated users
-    const ip = req.ip || req.connection.remoteAddress || '127.0.0.1';
-    const ipv6Subnet = 64; // Optional: customize IPv6 subnet size
-    return ipKeyGenerator(ip, ipv6Subnet);
+    // Production rate limit
+    return rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 5,
+        skipSuccessfulRequests: true,
+        keyGenerator: (req) => {
+            const ip = req.ip || req.connection.remoteAddress || '127.0.0.1';
+            return ipKeyGenerator(ip);
+        },
+        ...options
+    });
 };
 
-// Rest of your validation functions remain the same...
+// Registration rate limiter
+const registerLimiter = createRateLimiter({
+    message: {
+        error: 'Too many registration attempts. Please try again later.',
+        retryAfter: process.env.NODE_ENV === 'test' ? 2 : Math.ceil((15 * 60 * 1000) / 1000)
+    }
+});
+
+// server_helper.js - แก้ไข loginLimiter
+const loginLimiter = createRateLimiter({
+    max: process.env.NODE_ENV === 'test' ? 50 : 10, // เพิ่มขีดจำกัดสำหรับ test
+    windowMs: process.env.NODE_ENV === 'test' ? 1000 : 15 * 60 * 1000, // 1 วินาทีสำหรับ test
+    message: {
+        error: 'Too many login attempts. Please try again later.',
+        retryAfter: process.env.NODE_ENV === 'test' ? 1 : Math.ceil((15 * 60 * 1000) / 1000)
+    }
+});
+
+
+// Enhanced input validation middleware
 const validateRegisterInput = (req, res, next) => {
     const { username, email, password } = req.body;
     const errors = [];
@@ -105,31 +93,33 @@ const validateRegisterInput = (req, res, next) => {
         }
     }
 
-    // Password validation
+    // Password validation with English messages
     if (!password || typeof password !== 'string') {
-        errors.push('รหัสผ่านเป็นข้อมูลที่จำเป็นและต้องเป็นอักษร');
+        errors.push('Password is required and must be a string');
     } else {
         if (password.length < 8) {
-            errors.push('รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร');
+            errors.push('Password must be at least 8 characters long');
         }
         if (password.length > 128) {
-            errors.push('รหัสผ่านต้องมีน้อยกว่า 128 ตัวอักษร');
+            errors.push('Password must be less than 128 characters');
         }
         if (!/(?=.*[a-z])/.test(password)) {
-            errors.push('รหัสผ่านต้องมีอย่างน้อย 1 ตัวอักษรพิมพ์เล็ก');
+            errors.push('Password must contain at least one lowercase letter');
         }
         if (!/(?=.*[A-Z])/.test(password)) {
-            errors.push('รหัสผ่านต้องมีอย่างน้อย 1 ตัวอักษรพิมพ์ใหญ่');
+            errors.push('Password must contain at least one uppercase letter');
         }
         if (!/(?=.*\d)/.test(password)) {
-            errors.push('รหัสผ่านต้องมีอย่างน้อย 1 ตัวเลข');
+            errors.push('Password must contain at least one number');
         }
         if (!/(?=.*[@$!%*?&])/.test(password)) {
-            errors.push('รหัสผ่านต้องมีอย่างน้อย 1 ตัวอักษรพิเศษ (@$!%*?&)');
+            errors.push('Password must contain at least one special character (@$!%*?&)');
         }
+        
+        // Check for common weak passwords
         const commonPasswords = ['password', '12345678', 'qwerty123', 'admin123'];
         if (commonPasswords.some(common => password.toLowerCase().includes(common.toLowerCase()))) {
-            errors.push('รหัสผ่านนี้เชยเกินไป กรุณาเลือกใช้รหัสผ่านที่ปลอดภัยมากขึ้น');
+            errors.push('Password is too common, please choose a more secure password');
         }
     }
 
@@ -139,10 +129,11 @@ const validateRegisterInput = (req, res, next) => {
             details: errors
         });
     }
+    
     next();
 };
 
-// Login input validation (same as before)
+// server_helper.js - แก้ไข validateLoginInput
 const validateLoginInput = (req, res, next) => {
     const { email, password } = req.body;
     const errors = [];
@@ -150,9 +141,15 @@ const validateLoginInput = (req, res, next) => {
     if (!email || typeof email !== 'string') {
         errors.push('Email is required');
     } else {
+        // Enhanced email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
+        if (!emailRegex.test(email.trim())) {
             errors.push('Valid email address is required');
+        }
+        
+        // Check for malicious patterns
+        if (email.includes('<script>') || email.includes('DROP TABLE') || email.includes("'")) {
+            errors.push('Invalid email format');
         }
     }
 
@@ -168,8 +165,10 @@ const validateLoginInput = (req, res, next) => {
             details: errors
         });
     }
+    
     next();
 };
+
 
 // Security headers middleware
 const securityHeaders = (req, res, next) => {
@@ -190,17 +189,17 @@ const requestLogger = (req, res, next) => {
     const ip = req.ip || req.connection.remoteAddress;
     const userAgent = req.get('User-Agent') || 'Unknown';
 
-    console.log(`[${timestamp}] ${method} ${url} - IP: ${ip} - UA: ${userAgent}`);
+    if (process.env.NODE_ENV !== 'test') {
+        console.log(`[${timestamp}] ${method} ${url} - IP: ${ip} - UA: ${userAgent}`);
+    }
     next();
 };
 
-// Export using CommonJS syntax
 module.exports = {
     registerLimiter,
     loginLimiter,
     validateRegisterInput,
     validateLoginInput,
     securityHeaders,
-    requestLogger,
-    advancedKeyGenerator // Optional advanced version
+    requestLogger
 };

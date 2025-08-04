@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="18" failures="18" errors="0" time="25.74">
+  <testsuite name="POST /api/login" errors="0" failures="9" skipped="0" timestamp="2025-08-01T07:22:31" time="25.38" tests="9">
+    <testcase classname="POST /api/login Successful Login should login with valid credentials" name="POST /api/login Successful Login should login with valid credentials" time="0.195">
+      <failure>Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1939:16)
+    at listenInCluster (node:net:1996:12)
+    at Server.listen (node:net:2101:7)
+    at Function.listen (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\express\lib\application.js:635:24)
+    at Object.listen (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\server.js:404:5)
+    at Runtime._execModule (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runtime\build\index.js:1439:24)
+    at Runtime._loadModule (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runtime\build\index.js:1022:12)
+    at Runtime.requireModule (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runtime\build\index.js:882:12)
+    at Runtime.requireModuleOrMock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runtime\build\index.js:1048:21)
+    at Object.require (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\login.test.js:2:13)
+    at Runtime._execModule (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runtime\build\index.js:1439:24)
+    at Runtime._loadModule (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runtime\build\index.js:1022:12)
+    at Runtime.requireModule (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runtime\build\index.js:882:12)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:77:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/login Successful Login should accept email in different case" name="POST /api/login Successful Login should accept email in different case" time="0.086">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\login.test.js:16:8)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:246:5)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/login Authentication Failures should reject invalid email" name="POST /api/login Authentication Failures should reject invalid email" time="0.077">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\login.test.js:16:8)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:246:5)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/login Authentication Failures should reject invalid password" name="POST /api/login Authentication Failures should reject invalid password" time="0.086">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\login.test.js:16:8)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:246:5)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/login Authentication Failures should reject empty credentials" name="POST /api/login Authentication Failures should reject empty credentials" time="0.075">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\login.test.js:16:8)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:246:5)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/login Authentication Failures should reject invalid email format" name="POST /api/login Authentication Failures should reject invalid email format" time="0.074">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\login.test.js:16:8)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:246:5)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/login JWT Token Validation should return valid JWT token" name="POST /api/login JWT Token Validation should return valid JWT token" time="0.087">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\login.test.js:16:8)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:246:5)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/login JWT Token Validation should reject expired token" name="POST /api/login JWT Token Validation should reject expired token" time="0.088">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\login.test.js:16:8)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:246:5)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/login Rate Limiting should enforce login rate limiting" name="POST /api/login Rate Limiting should enforce login rate limiting" time="0.081">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\login.test.js:16:8)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:246:5)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="POST /api/register" errors="0" failures="9" skipped="0" timestamp="2025-08-01T07:22:31" time="25.425" tests="9">
+    <testcase classname="POST /api/register Successful Registration should register a new user successfully" name="POST /api/register Successful Registration should register a new user successfully" time="0.146">
+      <failure>Error: listen EADDRINUSE: address already in use :::5000
+    at Server.setupListenHandle [as _listen2] (node:net:1939:16)
+    at listenInCluster (node:net:1996:12)
+    at Server.listen (node:net:2101:7)
+    at Function.listen (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\express\lib\application.js:635:24)
+    at Object.listen (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\server.js:404:5)
+    at Runtime._execModule (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runtime\build\index.js:1439:24)
+    at Runtime._loadModule (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runtime\build\index.js:1022:12)
+    at Runtime.requireModule (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runtime\build\index.js:882:12)
+    at Runtime.requireModuleOrMock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runtime\build\index.js:1048:21)
+    at Object.require (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\register.test.js:6:13)
+    at Runtime._execModule (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runtime\build\index.js:1439:24)
+    at Runtime._loadModule (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runtime\build\index.js:1022:12)
+    at Runtime.requireModule (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runtime\build\index.js:882:12)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:77:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/register Validation Errors should reject empty request body" name="POST /api/register Validation Errors should reject empty request body" time="0.092">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\register.test.js:49:10)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/register Validation Errors should reject invalid username format" name="POST /api/register Validation Errors should reject invalid username format" time="0.084">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\register.test.js:64:10)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/register Validation Errors should reject short username" name="POST /api/register Validation Errors should reject short username" time="0.078">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\register.test.js:78:10)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/register Validation Errors should reject invalid email format" name="POST /api/register Validation Errors should reject invalid email format" time="0.073">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\register.test.js:91:10)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/register Validation Errors should reject weak password" name="POST /api/register Validation Errors should reject weak password" time="0.084">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\register.test.js:104:10)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/register Duplicate User Handling should reject duplicate email" name="POST /api/register Duplicate User Handling should reject duplicate email" time="0.086">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\register.test.js:116:10)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:246:5)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/register Duplicate User Handling should reject duplicate username" name="POST /api/register Duplicate User Handling should reject duplicate username" time="0.089">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\register.test.js:116:10)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusHook (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:281:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:246:5)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+    <testcase classname="POST /api/register Rate Limiting should enforce rate limiting after 5 attempts" name="POST /api/register Rate Limiting should enforce rate limiting after 5 attempts" time="0.082">
+      <failure>TypeError: app.address is not a function
+    at Test.serverAddress (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:61:22)
+    at new Test (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:49:14)
+    at Object.obj.&lt;computed&gt; [as post] (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\index.js:39:18)
+    at Object.post (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\register.test.js:154:14)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)</failure>
+    </testcase>
+  </testsuite>
+</testsuites>

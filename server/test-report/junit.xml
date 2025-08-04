@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="jest tests" tests="31" failures="5" errors="0" time="36.98">
+  <testsuite name="POST /api/register" errors="0" failures="2" skipped="0" timestamp="2025-08-01T09:45:47" time="32.094" tests="13">
+    <testcase classname="POST /api/register › Successful Registration" name="should register a new user successfully" time="2.529">
+    </testcase>
+    <testcase classname="POST /api/register › Successful Registration" name="should normalize email and username to lowercase" time="1.938">
+    </testcase>
+    <testcase classname="POST /api/register › Validation Errors" name="should reject empty request body" time="1.543">
+    </testcase>
+    <testcase classname="POST /api/register › Validation Errors" name="should reject invalid username format" time="1.566">
+    </testcase>
+    <testcase classname="POST /api/register › Validation Errors" name="should reject short username" time="1.558">
+    </testcase>
+    <testcase classname="POST /api/register › Validation Errors" name="should reject invalid email format" time="1.541">
+    </testcase>
+    <testcase classname="POST /api/register › Validation Errors" name="should reject weak password" time="1.559">
+    </testcase>
+    <testcase classname="POST /api/register › Validation Errors" name="should reject password without special characters" time="1.845">
+    </testcase>
+    <testcase classname="POST /api/register › Duplicate User Handling" name="should reject duplicate email" time="3.498">
+      <failure>Error: Existing user not created properly
+    at Object.&lt;anonymous&gt; (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\register.test.js:286:27)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="POST /api/register › Duplicate User Handling" name="should reject duplicate username" time="3.416">
+      <failure>Error: Existing user not created properly
+    at Object.&lt;anonymous&gt; (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\register.test.js:286:27)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="POST /api/register › Rate Limiting" name="should enforce rate limiting after multiple attempts" time="5.121">
+    </testcase>
+    <testcase classname="POST /api/register › Security Tests" name="should sanitize malicious input" time="2.051">
+    </testcase>
+    <testcase classname="POST /api/register › Security Tests" name="should handle extremely long input" time="2.041">
+    </testcase>
+  </testsuite>
+  <testsuite name="POST /api/login" errors="0" failures="3" skipped="0" timestamp="2025-08-01T09:45:47" time="36.157" tests="18">
+    <testcase classname="POST /api/login › Successful Login" name="should login with valid credentials" time="2.346">
+    </testcase>
+    <testcase classname="POST /api/login › Successful Login" name="should accept email in different case" time="2.031">
+    </testcase>
+    <testcase classname="POST /api/login › Successful Login" name="should create session with user agent and IP" time="2.029">
+      <failure>Error: expected 200 &quot;OK&quot;, got 500 &quot;Internal Server Error&quot;
+    at Object.expect (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\login.test.js:82:18)
+    at Promise.then.completed (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:298:28)
+    at new Promise (&lt;anonymous&gt;)
+    at callAsyncCircusFn (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\utils.js:231:10)
+    at _callCircusTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:316:40)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at _runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:252:3)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:126:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at _runTestsForDescribeBlock (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:121:9)
+    at run (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\run.js:71:3)
+    at runAndTransformResultsToJestFormat (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+    at jestAdapter (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+    at runTestInternal (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:367:16)
+    at runTest (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\runTest.js:444:34)
+    at Object.worker (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\jest-runner\build\testWorker.js:106:12)
+----
+    at Test._assertStatus (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:309:14)
+    at C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:365:13
+    at Test._assertFunction (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:342:13)
+    at Test.assert (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:195:23)
+    at localAssert (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:138:14)
+    at Server.&lt;anonymous&gt; (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\node_modules\supertest\lib\test.js:152:11)
+    at Object.onceWrapper (node:events:632:28)
+    at Server.emit (node:events:518:28)
+    at emitCloseNT (node:net:2418:8)
+    at processTicksAndRejections (node:internal/process/task_queues:89:21)</failure>
+    </testcase>
+    <testcase classname="POST /api/login › Authentication Failures" name="should reject invalid email" time="1.687">
+    </testcase>
+    <testcase classname="POST /api/login › Authentication Failures" name="should reject invalid password" time="1.955">
+    </testcase>
+    <testcase classname="POST /api/login › Authentication Failures" name="should reject empty credentials" time="1.641">
+    </testcase>
+    <testcase classname="POST /api/login › Authentication Failures" name="should reject invalid email format" time="1.663">
+    </testcase>
+    <testcase classname="POST /api/login › Authentication Failures" name="should reject missing password" time="1.628">
+    </testcase>
+    <testcase classname="POST /api/login › JWT Token Validation" name="should return valid JWT token" time="2.056">
+    </testcase>
+    <testcase classname="POST /api/login › JWT Token Validation" name="should reject malformed authorization header" time="1.658">
+    </testcase>
+    <testcase classname="POST /api/login › JWT Token Validation" name="should reject missing authorization header" time="1.672">
+    </testcase>
+    <testcase classname="POST /api/login › JWT Token Validation" name="should reject invalid token" time="1.627">
+    </testcase>
+    <testcase classname="POST /api/login › JWT Token Validation" name="should reject empty token" time="1.704">
+    </testcase>
+    <testcase classname="POST /api/login › Multiple Sessions" name="should allow multiple concurrent sessions" time="2.775">
+      <failure>Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 200
+Received: 401
+    at Object.toBe (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\login.test.js:249:43)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="POST /api/login › Rate Limiting" name="should not count successful logins against rate limit" time="2.635">
+      <failure>Error: Test user missing
+    at Object.&lt;anonymous&gt; (C:\Users\NB-24\Documents\abdul_frontEnd_0.0.1\server\tests\login.test.js:280:23)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)</failure>
+    </testcase>
+    <testcase classname="POST /api/login › Security Tests" name="should handle SQL injection attempts" time="1.625">
+    </testcase>
+    <testcase classname="POST /api/login › Security Tests" name="should handle XSS attempts in login" time="1.627">
+    </testcase>
+    <testcase classname="POST /api/login › Logout Functionality" name="should logout successfully" time="1.896">
+    </testcase>
+  </testsuite>
+</testsuites>

@@ -2,11 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserIcon, ChevronDownIcon, UserCircleIcon, ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
 
-export default function NavBar() {
+
+export default function NavBar({ userName, onLogout }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [user, setUser] = useState(userName || 'Whos that!'); // Default to 'Admin' if no userName is provided
     const menuRef = useRef(null);
     const buttonRef = useRef(null);
-    const navigate = useNavigate();
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -18,9 +19,10 @@ export default function NavBar() {
     };
 
     const handleLogout = () => {
-        console.log('Logout user');
+        if (onLogout) {
+            onLogout();
+        }
         setIsMenuOpen(false);
-        navigate('/login'); // Redirect to login page after logout
     };
 
     // Close menu when clicking outside
@@ -48,7 +50,7 @@ export default function NavBar() {
                     className="flex items-center gap-2 px-3 py-2 rounded-xl bg-purple-800/50 border border-purple-600/40 text-purple-100 hover:bg-purple-700/60 hover:border-orange-400/50 transition-all duration-200"
                 >
                     <UserIcon className="h-5 w-5" />
-                    <span className="text-sm font-medium">Admin</span>
+                    <span className="text-sm font-medium">{user}</span>
                     <ChevronDownIcon 
                         className={`h-4 w-4 transition-transform duration-200 ${
                             isMenuOpen ? 'rotate-180' : ''

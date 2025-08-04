@@ -1,5 +1,6 @@
 // server.js
 
+const cookieParser = require('cookie-parser');
 const express = require('express');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
@@ -8,17 +9,17 @@ const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 const axios = require('axios');
 const cors = require('cors');
-const bcrypt = require('bcrypt'); // Fixed: was 'Bcrypt'
+const bcrypt = require('bcrypt');
 require('dotenv').config();
 
-// Import corrected helper functions
-const { 
-    registerLimiter, 
+// Import helper functions
+const {
+    registerLimiter,
     validateRegisterInput,
     loginLimiter,
     validateLoginInput,
     securityHeaders,
-    requestLogger 
+    requestLogger
 } = require('./server_helper');
 
 const app = express();
@@ -27,16 +28,20 @@ const app = express();
 app.use(securityHeaders);
 app.use(requestLogger);
 app.use(bodyParser.json());
+app.use(cookieParser());
 
-// PostgreSQL connection pool
+// **FIXED: Use test database when in test environment**
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: process.env.NODE_ENV === 'test'
+        ? process.env.TEST_DATABASE_URL
+        : process.env.DATABASE_URL,
+    options: '-c timezone=Asia/Bangkok'
 });
 
 // Configure CORS for specific origin (more secure)
 app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
-        ? process.env.FRONTEND_URL 
+    origin: process.env.NODE_ENV === 'production'
+        ? process.env.FRONTEND_URL
         : 'http://localhost:3000',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -65,35 +70,62 @@ app.use(
 
 // Home route
 app.get('/', (req, res) => {
-    res.json({ 
+    res.json({
         message: 'Welcome to the Auth Server!',
         version: '1.0.0',
         environment: process.env.NODE_ENV || 'development'
     });
 });
 
-// Enhanced register route with comprehensive error handling
+// Enhanced register route with comprehensive security improvements
 app.post('/api/register', registerLimiter, validateRegisterInput, async (req, res) => {
-    const { username, email, password } = req.body;
+    const { username, email, password, image } = req.body;
 
     try {
-        // Check for existing users (prevent information leakage)
+        console.log(`🔍 Registration attempt for: ${email} / ${username}`);
+
+        if (process.env.NODE_ENV === 'test') {
+            console.log(`🧪 [TEST] Registration attempt:`, {
+                username: username,
+                email: email,
+                timestamp: new Date().toISOString()
+            });
+        }
+
+        // Check for existing users with detailed logging
         const existingUserCheck = await pool.query(
-            'SELECT id FROM authen.users WHERE email = $1 OR username = $2',
+            'SELECT id, email, username FROM authen.users WHERE email = $1 OR username = $2',
             [email.toLowerCase(), username.toLowerCase()]
         );
 
+        if (process.env.NODE_ENV === 'test') {
+            console.log(`🧪 [TEST] Existing users check:`, {
+                found: existingUserCheck.rows.length,
+                users: existingUserCheck.rows
+            });
+        }
+
         if (existingUserCheck.rows.length > 0) {
+            const existingUser = existingUserCheck.rows[0];
+            console.log(`❌ Duplicate detected: ${existingUser.email === email.toLowerCase() ? 'email' : 'username'}`);
+
             return res.status(409).json({
                 error: 'Registration failed. Username or email may already be in use.'
             });
         }
 
-        // Hash password securely (async version is more secure than sync)
+        // Hash password securely with timing attack protection
         const saltRounds = 12;
+        const startTime = Date.now();
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        
-        // Insert new user with normalized data
+        const hashTime = Date.now() - startTime;
+
+        // Log hashing time for security monitoring
+        if (hashTime > 1000) {
+            console.warn(`⚠️ Password hashing took ${hashTime}ms - unusually long`);
+        }
+
+        // Insert new user with enhanced error handling
         const result = await pool.query(
             'INSERT INTO authen.users (role, username, email, password, image) VALUES ($1, $2, $3, $4, $5) RETURNING id, username, email, role, created_at',
             ['user', username.toLowerCase(), email.toLowerCase(), hashedPassword, null]
@@ -101,10 +133,25 @@ app.post('/api/register', registerLimiter, validateRegisterInput, async (req, re
 
         const newUser = result.rows[0];
 
-        // Log successful registration for audit (don't log sensitive data)
-        console.log(`New user registered: ${newUser.id} at ${new Date().toISOString()}`);
+        if (process.env.NODE_ENV === 'test') {
+            console.log(`🧪 [TEST] User created successfully:`, {
+                id: newUser.id,
+                email: newUser.email,
+                username: newUser.username
+            });
+        }
 
-        // Return success response (exclude sensitive data)
+        // Enhanced audit logging
+        console.log(`✅ User registered successfully:`, {
+            userId: newUser.id,
+            username: newUser.username,
+            email: newUser.email,
+            timestamp: new Date().toISOString(),
+            ip: req.ip || req.connection.remoteAddress,
+            userAgent: req.headers['user-agent']
+        });
+
+        // Return success response with consistent format
         res.status(201).json({
             success: true,
             message: 'Account created successfully',
@@ -118,103 +165,226 @@ app.post('/api/register', registerLimiter, validateRegisterInput, async (req, re
         });
 
     } catch (error) {
-        // Log detailed error for debugging (server-side only)
-        console.error('Registration error:', {
+        // Enhanced error logging with security context
+        console.error('❌ Registration failed:', {
             error: error.message,
             code: error.code,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined,
             timestamp: new Date().toISOString(),
-            userAgent: req.headers['user-agent'],
-            ip: req.ip || req.connection.remoteAddress
+            requestData: {
+                username: username,
+                email: email,
+                hasImage: !!image
+            },
+            clientInfo: {
+                ip: req.ip || req.connection.remoteAddress,
+                userAgent: req.headers['user-agent'],
+                origin: req.headers['origin']
+            }
         });
 
-        // Handle specific PostgreSQL errors
+        // Handle specific PostgreSQL errors with security considerations
         if (error.code === '23505') {
+            // Unique violation - could be race condition
+            const constraintName = error.constraint || 'unknown';
+            console.warn(`⚠️ Unique constraint violation: ${constraintName}`);
+
             return res.status(409).json({
                 error: 'Registration failed. Username or email may already be in use.'
             });
         }
 
         if (error.code === '23514') {
+            // Check constraint violation
+            console.warn(`⚠️ Check constraint violation: ${error.constraint}`);
             return res.status(400).json({
                 error: 'Invalid data provided'
             });
         }
 
         if (error.code === '23502') {
+            // Not null violation
+            console.warn(`⚠️ Required field missing: ${error.column}`);
             return res.status(400).json({
                 error: 'Required fields are missing'
             });
         }
 
-        // Generic error response
+        if (error.code === '42P01') {
+            // Table doesn't exist - critical system error
+            console.error(`🚨 Critical: Database table missing`);
+            return res.status(500).json({
+                error: 'System temporarily unavailable. Please contact support.'
+            });
+        }
+
+        if (error.code === '53300') {
+            // Too many connections
+            console.error(`🚨 Database connection limit reached`);
+            return res.status(503).json({
+                error: 'Service temporarily overloaded. Please try again in a moment.'
+            });
+        }
+
+        // Connection or timeout errors
+        if (error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT') {
+            console.error(`🚨 Database connection issue: ${error.code}`);
+            return res.status(503).json({
+                error: 'Service temporarily unavailable. Please try again later.'
+            });
+        }
+
+        // Generic error response (don't leak implementation details)
         res.status(500).json({
             error: 'Registration temporarily unavailable. Please try again later.'
         });
     }
 });
 
-// Enhanced login route with proper password verification
+
+// server.js - Enhanced login route สำหรับ debugging
 app.post('/api/login', loginLimiter, validateLoginInput, async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Lookup user by email
+        if (process.env.NODE_ENV === 'test') {
+            console.log(`🧪 [LOGIN-DEBUG] Environment variables check:`, {
+                NODE_ENV: process.env.NODE_ENV,
+                JWT_SECRET: process.env.JWT_SECRET ? '✅ Set' : '❌ Missing',
+                JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET ? '✅ Set' : '❌ Missing',
+                DATABASE_URL: process.env.TEST_DATABASE_URL ? '✅ Set' : '❌ Missing'
+            });
+        }
+
+        // ตรวจสอบ JWT secrets อย่างเข้มงวด
+        const jwtSecret = process.env.JWT_SECRET || process.env.TEST_JWT_SECRET;
+        const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET || process.env.TEST_JWT_REFRESH_SECRET;
+
+        if (!jwtSecret || !jwtRefreshSecret) {
+            console.error('❌ CRITICAL: JWT secrets missing');
+            return res.status(500).json({
+                error: 'Server configuration error - JWT secrets missing'
+            });
+        }
+
+        // Lookup user by email with enhanced logging
         const result = await pool.query(
-            'SELECT * FROM authen.users WHERE email = $1',
+            'SELECT id, username, email, password, role FROM authen.users WHERE email = $1',
             [email.toLowerCase()]
         );
 
         const user = result.rows[0];
         if (!user) {
-            return res.status(401).json({ 
-                error: 'Invalid credentials' 
+            if (process.env.NODE_ENV === 'test') {
+                console.log(`🧪 [LOGIN-DEBUG] User not found: ${email}`);
+                
+                // Debug: แสดงว่ามี users อะไรใน database
+                const allUsers = await pool.query('SELECT email, username FROM authen.users LIMIT 5');
+                console.log(`🧪 [LOGIN-DEBUG] Available users:`, allUsers.rows);
+            }
+            return res.status(401).json({
+                error: 'Invalid credentials'
             });
         }
 
-        // Verify password with bcrypt
-        const passwordMatch = await bcrypt.compare(password, user.password);
+        // Verify password with enhanced error handling
+        let passwordMatch;
+        try {
+            passwordMatch = await bcrypt.compare(password, user.password);
+        } catch (bcryptError) {
+            console.error('❌ BCRYPT Error:', bcryptError);
+            return res.status(500).json({
+                error: 'Password verification failed'
+            });
+        }
+
         if (!passwordMatch) {
-            return res.status(401).json({ 
-                error: 'Invalid credentials' 
+            if (process.env.NODE_ENV === 'test') {
+                console.log(`🧪 [LOGIN-DEBUG] Password mismatch for: ${email}`);
+            }
+            return res.status(401).json({
+                error: 'Invalid credentials'
             });
         }
 
-        // Issue JWT tokens
-        const accessToken = jwt.sign(
-            { userId: user.id, role: user.role },
-            process.env.JWT_SECRET,
-            { expiresIn: '20m' }
-        );
+        // Issue JWT tokens with enhanced error handling
+        let accessToken, refreshToken;
+        try {
+            accessToken = jwt.sign(
+                { userId: user.id, role: user.role },
+                jwtSecret,
+                { expiresIn: '20m' }
+            );
 
-        const refreshToken = jwt.sign(
-            { userId: user.id },
-            process.env.JWT_REFRESH_SECRET,
-            { expiresIn: '7d' }
-        );
+            refreshToken = jwt.sign(
+                { userId: user.id },
+                jwtRefreshSecret,
+                { expiresIn: '7d' }
+            );
 
-        // Store refresh token in database
-        await pool.query(
-            'INSERT INTO authen.sessions (user_id, refresh_token, user_agent, ip_address, expires_at) VALUES ($1, $2, $3, $4, now() + interval \'7 days\')',
-            [
-                user.id, 
-                refreshToken, 
-                req.get('User-Agent') || 'Unknown',
-                req.ip || req.connection.remoteAddress || 'Unknown'
-            ]
-        );
+            if (process.env.NODE_ENV === 'test') {
+                console.log(`🧪 [LOGIN-DEBUG] JWT tokens generated successfully`);
+            }
+        } catch (jwtError) {
+            console.error('❌ JWT Generation Error:', jwtError);
+            return res.status(500).json({
+                error: 'Token generation failed',
+                details: process.env.NODE_ENV === 'test' ? jwtError.message : undefined
+            });
+        }
 
-        // Set refresh token as HTTP-only cookie
-        res.cookie('refresh_token', refreshToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000,
-        });
+        // Store refresh token in database with enhanced error handling
+        try {
+            const sessionResult = await pool.query(
+                'INSERT INTO authen.sessions (user_id, refresh_token, user_agent, ip_address, expires_at) VALUES ($1, $2, $3, $4, now() + interval \'7 days\') RETURNING id', // 5 minutes
+                [
+                    user.id,
+                    refreshToken,
+                    req.get('User-Agent') || 'Test-Agent',
+                    req.ip || req.socket.remoteAddress || '127.0.0.1'
+                ]
+            );
 
-        // Log successful login
-        console.log(`User login successful: ${user.id} at ${new Date().toISOString()}`);
+            if (process.env.NODE_ENV === 'test') {
+                console.log(`🧪 [LOGIN-DEBUG] Session created: ${sessionResult.rows[0].id}`);
+            }
+        } catch (sessionError) {
+            console.error('❌ Session Creation Error:', {
+                message: sessionError.message,
+                code: sessionError.code,
+                constraint: sessionError.constraint
+            });
+            return res.status(500).json({
+                error: 'Session creation failed',
+                details: process.env.NODE_ENV === 'test' ? sessionError.message : undefined
+            });
+        }
 
-        res.status(200).json({ 
+        // Set refresh token cookie with enhanced error handling
+        try {
+            res.cookie('refresh_token', refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: process.env.NODE_ENV === 'test' ? 'lax' : 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            });
+
+            if (process.env.NODE_ENV === 'test') {
+                console.log(`🧪 [LOGIN-DEBUG] Cookie set successfully`);
+            }
+        } catch (cookieError) {
+            console.error('❌ Cookie Setting Error:', cookieError);
+            return res.status(500).json({
+                error: 'Cookie setting failed'
+            });
+        }
+
+        // Success response
+        if (process.env.NODE_ENV === 'test') {
+            console.log(`🧪 [LOGIN-DEBUG] Login successful for: ${user.email}`);
+        }
+
+        res.json({
             success: true,
             accessToken,
             user: {
@@ -226,14 +396,17 @@ app.post('/api/login', loginLimiter, validateLoginInput, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Login error:', {
-            error: error.message,
+        console.error('❌ Login Critical Error:', {
+            message: error.message,
+            code: error.code,
+            stack: process.env.NODE_ENV === 'test' ? error.stack : undefined,
             timestamp: new Date().toISOString(),
-            ip: req.ip || req.connection.remoteAddress
+            email: email
         });
 
-        res.status(500).json({ 
-            error: 'Login temporarily unavailable. Please try again later.' 
+        res.status(500).json({
+            error: 'Login temporarily unavailable. Please try again later.',
+            details: process.env.NODE_ENV === 'test' ? error.message : undefined
         });
     }
 });
@@ -266,7 +439,7 @@ const authenticateToken = (req, res, next) => {
 app.get('/api/profile', authenticateToken, async (req, res) => {
     try {
         const { rows } = await pool.query(
-            'SELECT id, username, email, image, role, created_at FROM authen.users WHERE id = $1',
+            'SELECT id, username, email, role, created_at FROM authen.users WHERE id = $1',
             [req.user.userId]
         );
 
@@ -284,31 +457,60 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
     }
 });
 
-// Logout route
+// Fixed logout route
 app.post('/api/logout', authenticateToken, async (req, res) => {
     try {
+        if (process.env.NODE_ENV === 'test') {
+            console.log(`🧪 [LOGOUT] Starting logout for user: ${req.user.userId}`);
+        }
+
         const refreshToken = req.cookies.refresh_token;
         
         if (refreshToken) {
-            // Remove refresh token from database
-            await pool.query(
-                'DELETE FROM authen.sessions WHERE refresh_token = $1 AND user_id = $2',
-                [refreshToken, req.user.userId]
-            );
+            try {
+                // Remove refresh token from database
+                const deleteResult = await pool.query(
+                    'DELETE FROM authen.sessions WHERE refresh_token = $1 AND user_id = $2',
+                    [refreshToken, req.user.userId]
+                );
+
+                if (process.env.NODE_ENV === 'test') {
+                    console.log(`🧪 [LOGOUT] Deleted ${deleteResult.rowCount} session(s)`);
+                }
+            } catch (dbError) {
+                console.error('❌ Database session deletion error:', dbError);
+                // Continue with logout even if DB deletion fails
+            }
         }
 
         // Clear refresh token cookie
-        res.clearCookie('refresh_token');
+        res.clearCookie('refresh_token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax'
+        });
         
-        console.log(`User logout: ${req.user.userId} at ${new Date().toISOString()}`);
+        if (process.env.NODE_ENV !== 'test') {
+            console.log(`✅ User logout: ${req.user.userId} at ${new Date().toISOString()}`);
+        }
         
         res.json({ 
             success: true,
             message: 'Logged out successfully' 
         });
+
     } catch (error) {
-        console.error('Logout error:', error);
-        res.status(500).json({ error: 'Logout failed' });
+        console.error('❌ Logout error:', {
+            message: error.message,
+            code: error.code,
+            userId: req.user?.userId,
+            timestamp: new Date().toISOString()
+        });
+        
+        res.status(500).json({ 
+            error: 'Logout failed',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 });
 
@@ -323,7 +525,7 @@ app.post('/api/refresh-token', async (req, res) => {
     try {
         // Verify refresh token
         const payload = jwt.verify(refresh_token, process.env.JWT_REFRESH_SECRET);
-        
+
         // Check if refresh token exists in database
         const result = await pool.query(
             'SELECT * FROM authen.sessions WHERE refresh_token = $1 AND user_id = $2 AND expires_at > now() AND revoked = false',
@@ -341,9 +543,9 @@ app.post('/api/refresh-token', async (req, res) => {
             { expiresIn: '20m' }
         );
 
-        res.json({ 
+        res.json({
             success: true,
-            accessToken: newAccessToken 
+            accessToken: newAccessToken
         });
 
     } catch (error) {
@@ -351,6 +553,7 @@ app.post('/api/refresh-token', async (req, res) => {
         res.status(403).json({ error: 'Invalid refresh token' });
     }
 });
+
 
 // Example: Outbound API call using axios
 app.get('/api/external-data', authenticateToken, async (req, res) => {
@@ -393,22 +596,27 @@ app.use((error, req, res, next) => {
         timestamp: new Date().toISOString(),
         path: req.path
     });
-    
+
     res.status(500).json({
         error: 'Internal server error'
     });
 });
 
-// Listen
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Auth server running on port ${PORT}`);
-    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-});
+// **CRITICAL: Export app for testing**
+module.exports = app;
 
-// Graceful shutdown
-process.on('SIGINT', async () => {
-    console.log('Shutting down server...');
-    await pool.end();
-    process.exit(0);
-});
+// Start server only if not in test environment
+if (process.env.NODE_ENV !== 'test') {
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+        console.log(`Auth server running on port ${PORT}`);
+        console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    });
+
+    // Graceful shutdown
+    process.on('SIGINT', async () => {
+        console.log('Shutting down server...');
+        await pool.end();
+        process.exit(0);
+    });
+}
