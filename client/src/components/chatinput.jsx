@@ -1,10 +1,15 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
 import Axios from "axios";
+import { ChatContext } from "../pages/home";
+import { ChatRoomContext } from "../pages/home/chatroom";
 import { PDFDocument } from 'pdf-lib';
 import { PaperClipIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
-export default function ChatInput({ onNewMessage, fileData, setFileData }) {
+export default function ChatInput({ onNewMessage, chatId, fileData, setFileData }) {
+  const { fetchChatList, chatList, setNewChat, setCurrentChat } = useContext(ChatContext);
+  const { newChat, userId } = useContext(ChatRoomContext);
   const inputRef = useRef(null);
+  const [chat_id, setChat_id] = useState(chatId || null);
   const [chatInput, setChatInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -18,7 +23,7 @@ export default function ChatInput({ onNewMessage, fileData, setFileData }) {
     const buffer = await file.arrayBuffer();
     const pdf = await PDFDocument.load(buffer);
     const base64 = await pdf.saveAsBase64({ dataUri: true });
-    
+
     setFileData({
       name: file.name,
       size: file.size,
@@ -41,75 +46,100 @@ export default function ChatInput({ onNewMessage, fileData, setFileData }) {
     // Create user message object
     const userMessage = {
       id: Date.now(),
-      text: messageText,
-      timestamp: new Date().toISOString(),
-      sender: 'user',
+      content: messageText,
+      time: new Date().toISOString(),
+      role: 'human',
       file: currentFile,
       status: 'sent'
     };
 
-    // **CALLBACK TO CHATROOM** - Add user message immediately
+    // Add user message immediately
     onNewMessage(userMessage);
-
     setIsLoading(true);
 
     try {
-      // Send to n8n webhook
-      const response = await Axios.post(
-        'http://localhost:5678/webhook/nlqchat001', 
-        {
-          message: messageText,
-          file: currentFile
-        }
-      );
-      console.log(`response from n8n: ${JSON.stringify(response.data)}`);
-
-      // Handle n8n response format: single object with output property
-      if (response.data && response.data.output) {
-        const botResponseText = response.data.output;
-        
-        if (botResponseText) {
-          const botMessage = {
-            id: Date.now() + Math.random(), // Ensure unique ID
-            text: botResponseText.trim(),
-            timestamp: new Date().toISOString(),
-            sender: 'bot',
-            status: 'received'
-          };
-          console.log(`(chat input) Bot response: ${botResponseText}`);
-          // **CALLBACK TO CHATROOM** - Add bot response
-          onNewMessage(botMessage);
-        }
-      } else {
-        // Handle case where response doesn't have expected format
-        console.warn('Unexpected response format:', response.data);
-        const errorMessage = {
-          id: Date.now() + Math.random(),
-          text: "Received an unexpected response format from the server.",
-          timestamp: new Date().toISOString(),
-          sender: 'bot',
-          status: 'error',
-          isError: true
-        };
-        onNewMessage(errorMessage);
-      }
+      const response = await sendMessage(messageText, currentFile);
+      handleSuccessResponse(response);
     } catch (error) {
-      console.error('Failed to send message:', error);
-      
-      // **CALLBACK TO CHATROOM** - Add error message
-      const errorMessage = {
-        id: Date.now() + Math.random(),
-        text: "Sorry, I couldn't process your message. Please try again.",
-        timestamp: new Date().toISOString(),
-        sender: 'bot',
-        status: 'error',
-        isError: true
-      };
-      onNewMessage(errorMessage);
+      handleErrorResponse(error);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Helper function to send message based on chat type
+  const sendMessage = async (messageText, currentFile) => {
+    const payload = {
+      message: messageText,
+      file: currentFile
+    };
+
+    if (newChat) {
+      return await Axios.post('http://localhost:5678/webhook/create-new-chat', {
+        status: 'new',
+        user_id: userId,
+        ...payload
+      });
+    } else {
+      return await Axios.post('http://localhost:5678/webhook/nlqchat001', {
+        chat_id: chat_id,
+        ...payload
+      });
+    }
+  };
+
+  // Helper function to handle successful responses
+  const handleSuccessResponse = (response) => {
+    if (response.data?.output) {
+        if (newChat) {
+            // Use async/await for better flow control
+            const updateChatAndSetCurrent = async () => {
+                const updatedChatList = await fetchChatList();
+                if (updatedChatList && updatedChatList.length > 0) {
+                    // Latest chat is now guaranteed to be first
+                    setCurrentChat(updatedChatList[0]);
+                    setNewChat(false);
+                }
+            };
+            updateChatAndSetCurrent();
+        }
+        
+        const botMessage = {
+            id: Date.now() + Math.random(),
+            content: response.data.output.trim(),
+            time: new Date().toISOString(),
+            role: 'ai',
+            status: 'received'
+        };
+
+        console.log(`Bot response: ${response.data.output}`);
+        onNewMessage(botMessage);
+    } else {
+        console.warn('Unexpected response format:', response.data);
+        createErrorMessage("Received an unexpected response format from the server.");
+    }
+};
+
+
+  // Helper function to handle errors
+  const handleErrorResponse = (error) => {
+    console.error('Failed to send message:', error);
+    createErrorMessage("Sorry, I couldn't process your message. Please try again.");
+  };
+
+  // Helper function to create error messages
+  const createErrorMessage = (content) => {
+    const errorMessage = {
+      id: Date.now() + Math.random(),
+      content,
+      time: new Date().toISOString(),
+      role: 'ai',
+      status: 'error',
+      isError: true
+    };
+    onNewMessage(errorMessage);
+  };
+
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -117,6 +147,10 @@ export default function ChatInput({ onNewMessage, fileData, setFileData }) {
       handleSend();
     }
   };
+
+  useEffect(() => {
+    setChat_id(chatId);
+  }, [chatId]);
 
   return (
     <div className="border-t bg-white p-4 shadow-lg">
@@ -162,7 +196,7 @@ export default function ChatInput({ onNewMessage, fileData, setFileData }) {
             style={{ minHeight: '48px', maxHeight: '120px' }}
           />
         </div>
-        
+
         {/* File upload button */}
         <label className={`cursor-pointer p-3 rounded-xl text-gray-500 hover:text-blue-500 hover:bg-blue-50 transition-all duration-200 ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}>
           <PaperClipIcon className="h-5 w-5" />

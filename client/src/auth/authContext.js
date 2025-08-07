@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import { setChatAccessToken } from '../utils/chatApi';
 import { authAPI } from './authAPI';
 
 const AuthContext = createContext();
@@ -15,13 +16,16 @@ const initialState = {
 const authReducer = (state, action) => {
   switch (action.type) {
     case 'LOGIN_START':
-      return { 
-        ...state, 
+      return {
+        ...state,
         isLoading: true,
-        error: null 
+        error: null
       };
-    
+
     case 'LOGIN_SUCCESS':
+      if (action.payload.accessToken) {
+        setChatAccessToken(action.payload.accessToken);
+      }
       return {
         ...state,
         user: action.payload.user,
@@ -30,7 +34,7 @@ const authReducer = (state, action) => {
         isLoading: false,
         error: null
       };
-    
+
     case 'LOGIN_FAILURE':
       return {
         ...state,
@@ -40,25 +44,29 @@ const authReducer = (state, action) => {
         isLoading: false,
         error: action.payload
       };
-    
+
     case 'LOGOUT':
-      return { 
-        ...initialState, 
-        isLoading: false 
+      setChatAccessToken(null);
+      return {
+        ...initialState,
+        isLoading: false
       };
-    
+
     case 'TOKEN_REFRESH':
+      if (action.payload.accessToken) {
+        setChatAccessToken(action.payload.accessToken);
+      }
       return {
         ...state,
         accessToken: action.payload.accessToken
       };
-    
+
     case 'CLEAR_ERROR':
       return {
         ...state,
         error: null
       };
-    
+
     default:
       return state;
   }
@@ -75,10 +83,10 @@ export const AuthProvider = ({ children }) => {
   const checkAuthStatus = async () => {
     try {
       dispatch({ type: 'LOGIN_START' });
-      
+
       // Check if there's a valid token in cookies
       const res = await authAPI.getProfile();
-      
+
       if (res && res.success) {
         dispatch({
           type: 'LOGIN_SUCCESS',
@@ -120,7 +128,7 @@ export const AuthProvider = ({ children }) => {
     try {
       dispatch({ type: 'LOGIN_START' });
       const res = await authAPI.login(credentials);
-      
+
       if (res && res.success) {
         dispatch({
           type: 'LOGIN_SUCCESS',
@@ -146,7 +154,7 @@ export const AuthProvider = ({ children }) => {
     try {
       dispatch({ type: 'LOGIN_START' });
       const res = await authAPI.register(userData);
-      
+
       if (res && res.success) {
         dispatch({
           type: 'LOGIN_SUCCESS',
@@ -196,6 +204,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const getProfile = async () => {
+    try {
+      const res = await authAPI.getProfile();
+      if (res && res.success) {
+        return res.user;
+      } else {
+        throw new Error('Failed to fetch profile');
+      }
+    } catch (error) {
+      console.error('Get profile error:', error);
+      throw error;
+    }
+  };
+
+  const revokeToken = async () => {
+    try {
+      await authAPI.revokeToken();
+      dispatch({ type: 'LOGIN_FAILURE', payload: 'Token revoked' });
+    } catch (error) {
+      console.error('Token revocation failed:', error);
+      dispatch({ type: 'LOGIN_FAILURE', payload: 'Token revocation failed' });
+    }
+  };
+
   const clearError = () => {
     dispatch({ type: 'CLEAR_ERROR' });
   };
@@ -212,6 +244,8 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     refreshToken,
+    getProfile,
+    revokeToken,
     clearError
   };
 
@@ -229,5 +263,21 @@ export const useAuth = () => {
   }
   return context;
 };
+
+// Add this to your authContext.js file, after the useAuth hook
+export const useUserData = () => {
+  const { user, isAuthenticated, isLoading } = useAuth();
+  return {
+    userId: user?.id || user?._id, // Handle both 'id' and '_id' fields
+    username: user?.username || user?.name || user?.displayName,
+    email: user?.email,
+    avatar: user?.avatar || user?.profilePicture,
+    role: user?.role,
+    isAuthenticated,
+    isLoading,
+    user // Return full user object as fallback
+  };
+};
+
 
 export default AuthContext;

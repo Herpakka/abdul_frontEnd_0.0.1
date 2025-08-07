@@ -277,7 +277,7 @@ app.post('/api/login', loginLimiter, validateLoginInput, async (req, res) => {
         if (!user) {
             if (process.env.NODE_ENV === 'test') {
                 console.log(`🧪 [LOGIN-DEBUG] User not found: ${email}`);
-                
+
                 // Debug: แสดงว่ามี users อะไรใน database
                 const allUsers = await pool.query('SELECT email, username FROM authen.users LIMIT 5');
                 console.log(`🧪 [LOGIN-DEBUG] Available users:`, allUsers.rows);
@@ -465,7 +465,7 @@ app.post('/api/logout', authenticateToken, async (req, res) => {
         }
 
         const refreshToken = req.cookies.refresh_token;
-        
+
         if (refreshToken) {
             try {
                 // Remove refresh token from database
@@ -489,14 +489,14 @@ app.post('/api/logout', authenticateToken, async (req, res) => {
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax'
         });
-        
+
         if (process.env.NODE_ENV !== 'test') {
             console.log(`✅ User logout: ${req.user.userId} at ${new Date().toISOString()}`);
         }
-        
-        res.json({ 
+
+        res.json({
             success: true,
-            message: 'Logged out successfully' 
+            message: 'Logged out successfully'
         });
 
     } catch (error) {
@@ -506,8 +506,8 @@ app.post('/api/logout', authenticateToken, async (req, res) => {
             userId: req.user?.userId,
             timestamp: new Date().toISOString()
         });
-        
-        res.status(500).json({ 
+
+        res.status(500).json({
             error: 'Logout failed',
             details: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
@@ -554,6 +554,208 @@ app.post('/api/refresh-token', async (req, res) => {
     }
 });
 
+// revoke refresh token route
+app.post('/api/revoke-token', authenticateToken, async (req, res) => {
+    const { refresh_token } = req.cookies;
+
+    if (!refresh_token) {
+        return res.status(401).json({ error: 'Refresh token required' });
+    }
+
+    try {
+        // Mark the refresh token as revoked in the database
+        const result = await pool.query(
+            'UPDATE authen.sessions SET revoked = true WHERE refresh_token = $1 AND user_id = $2 RETURNING id',
+            [refresh_token, req.user.userId]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Refresh token not found' });
+        }
+
+        // Clear the cookie
+        res.clearCookie('refresh_token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax'
+        });
+
+        res.json({
+            success: true,
+            message: 'Refresh token revoked successfully'
+        });
+
+    } catch (error) {
+        console.error('Revoke token error:', error);
+        res.status(500).json({ error: 'Failed to revoke refresh token' });
+    }
+});
+
+///////////////////////////////////////////////////////////////////////
+// chat API
+///////////////////////////////////////////////////////////////////////
+app.post('/api/chatCreate', authenticateToken, async (req, res) => {
+    const { userId, firstMessage } = req.body;
+    const chatTitle = firstMessage.slice(0, 20); // Limit title to 20 characters
+    try {
+        const res = await pool.query(
+            'INSERT INTO chat_data.user_chats (user_id, chat_title) VALUES ($1, $2) RETURNING id',
+            [userId, chatTitle])
+    } catch (error) {
+        console.error('Error creating chat:', error);
+        res.status(500).json({ error: 'Failed to create chat' });
+    }
+})
+
+app.get('/api/chatHistory/:chat_id', authenticateToken, async (req, res) => {
+    const chatId = req.params.chat_id;
+    try {
+        const result = await pool.query(
+            'SELECT message, created_at FROM public.n8n_chat_histories WHERE session_id = $1 ORDER BY created_at ASC',
+            [chatId]
+        );
+        res.json({
+            success: true,
+            data: result.rows
+        });
+    } catch (error) {
+        console.error('Error fetching chat history:', error);
+        res.status(500).json({ error: 'Failed to fetch chat history' });
+    }
+    
+});
+
+app.get('/api/chatList/:userId', authenticateToken, async (req, res) => {
+    const userId = req.params.userId;
+    try {
+        const result = await pool.query(
+            'SELECT id, chat_title, update_at FROM chat_data.user_chats WHERE user_id = $1 ORDER BY update_at DESC',
+            [userId]
+        );
+        res.json({
+            success: true,
+            data: result.rows
+        });
+    } catch (error) {
+        console.error('Error fetching chat list:', error);
+        res.status(500).json({ error: 'Failed to fetch chat list' });
+    }
+});
+
+// delete chat
+app.delete('/api/chatDelete/:chatId', authenticateToken, async (req, res) => {
+    const chatId = req.params.chatId
+    try {
+        const result = await pool.query(
+            'DELETE FROM chat_data.user_chats WHERE id = $1 RETURNING id',
+            [chatId]
+        )
+        if (result.rowCount === 0) {
+            return res.status(404).json({ 
+                error: 'Chat not found or already deleted',
+                success: false 
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: 'Chat deleted successfully',
+            chatId: result.rows[0].id
+        });
+    } catch (error) {
+        console.error('Error deleting chat:', {
+            chatId,
+            userId: req.user?.id,
+            error: error.message,
+            stack: error.stack
+        });
+
+        // Handle specific database errors
+        if (error.code === '23503') {
+            return res.status(400).json({ 
+                error: 'Cannot delete chat: Foreign key constraint violation',
+                success: false 
+            });
+        }
+
+        if (error.code === '22P02') {
+            return res.status(400).json({ 
+                error: 'Invalid chat ID format',
+                success: false 
+            });
+        }
+
+        // Generic server error
+        res.status(500).json({ 
+            error: 'Internal server error while deleting chat',
+            success: false 
+        });
+    }
+});
+
+// rename chat
+app.put('/api/chatRename/:chatId', authenticateToken, async (req, res) => {
+    const chatId = req.params.chatId;
+    const { newTitle } = req.body;
+
+    if (!newTitle || typeof newTitle !== 'string' || newTitle.trim() === '') {
+        return res.status(400).json({ 
+            error: 'Invalid chat title provided',
+            success: false 
+        });
+    }
+
+    try {
+        const result = await pool.query(
+            'UPDATE chat_data.user_chats SET chat_title = $1, update_at = NOW() WHERE id = $2 RETURNING id, chat_title',
+            [newTitle.trim(), chatId]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ 
+                error: 'Chat not found or already renamed',
+                success: false 
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Chat renamed successfully',
+            chat: result.rows[0]
+        });
+    } catch (error) {
+        console.error('Error renaming chat:', {
+            chatId,
+            userId: req.user?.id,
+            error: error.message,
+            stack: error.stack
+        });
+
+        // Handle specific database errors
+        if (error.code === '23505') {
+            return res.status(409).json({ 
+                error: 'Chat title already exists',
+                success: false 
+            });
+        }
+
+        if (error.code === '22P02') {
+            return res.status(400).json({ 
+                error: 'Invalid chat ID format',
+                success: false 
+            });
+        }
+
+        // Generic server error
+        res.status(500).json({ 
+            error: 'Internal server error while renaming chat',
+            success: false 
+        });
+    }
+});
+
+///////////////////////////////////////////////////////////////////////////////////
+// etc
+///////////////////////////////////////////////////////////////////////////////////
 
 // Example: Outbound API call using axios
 app.get('/api/external-data', authenticateToken, async (req, res) => {

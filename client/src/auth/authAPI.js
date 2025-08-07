@@ -1,3 +1,5 @@
+// auth/authAPI.js
+
 import axios from "axios";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
@@ -59,6 +61,7 @@ export const authAPI = {
         const res = await api.post('/api/login', credentials)
         if (res.data.accessToken){
             setAccessToken(res.data.accessToken);
+            localStorage.setItem('userName', res.data.user.username);
         }
         return res.data;
     },
@@ -80,6 +83,11 @@ export const authAPI = {
         if (res.data.accessToken){
             setAccessToken(res.data.accessToken)
         }
+        return res.data;
+    },
+    revokeToken: async () => {
+        const res = await api.post('/api/revoke-token');
+        setAccessToken(null);
         return res.data;
     }
 }
