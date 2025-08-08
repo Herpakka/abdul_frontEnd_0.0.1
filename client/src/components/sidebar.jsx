@@ -12,7 +12,7 @@ import {
 } from '@heroicons/react/24/outline';
 import RenameModal from './renameModal';
 
-export default function SideBar({ selected_chat, onChatSelect }) {
+export default function SideBar({ selected_chat, onChatSelect, isOpen, setIsOpen }) {
   const { 
     chatList,
     currentChat, 
@@ -20,7 +20,6 @@ export default function SideBar({ selected_chat, onChatSelect }) {
     setNewChat,
     handleChatDelete
   } = useContext(ChatContext);
-  const [isOpen, setIsOpen] = useState(true);
   const [chatHistory, setChatHistory] = useState(chatList || []);
   const [selectedChat, setSelectedChat] = useState(selected_chat || null);
   const [hoveredChat, setHoveredChat] = useState(null);
@@ -29,7 +28,7 @@ export default function SideBar({ selected_chat, onChatSelect }) {
   const menuRef = useRef(null);
 
   const toggleSidebar = () => {
-    setIsOpen(!isOpen);
+    if (setIsOpen) setIsOpen(!isOpen);
   };
 
   const handleChatSelect = (chat) => {
@@ -88,7 +87,7 @@ export default function SideBar({ selected_chat, onChatSelect }) {
     <>
       {/* Sidebar */}
       <aside
-        className={`left-0 top-16 h-full] bg-gradient-to-b from-purple-900/95 via-purple-800/95 to-purple-900/95 backdrop-blur-xl border-r border-purple-600/40 shadow-xl shadow-purple-900/30 transition-all duration-300 z-40 ${isOpen ? 'w-80' : 'w-16'
+        className={`fixed md:relative left-0 top-16 h-[calc(100%-4rem)] bg-gradient-to-b from-purple-900/95 via-purple-800/95 to-purple-900/95 backdrop-blur-xl border-r border-purple-600/40 shadow-xl shadow-purple-900/30 transform transition-transform duration-300 z-40 ${isOpen ? 'translate-x-0 w-80' : '-translate-x-full w-80 md:translate-x-0 md:w-16'
           }`}
       >
         {/* Top Bar with Toggle and New Chat Button */}

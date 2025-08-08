@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '../pages/home';
-import { UserIcon, ChevronDownIcon, UserCircleIcon, ArrowRightOnRectangleIcon } from "@heroicons/react/24/outline";
+import { UserIcon, ChevronDownIcon, UserCircleIcon, ArrowRightOnRectangleIcon, Bars3Icon } from "@heroicons/react/24/outline";
 import ProfileModal from './profileModal';
 
-export default function NavBar() {
+export default function NavBar({ onMenuClick }) {
   const { userData, handleLogout } = useContext(UserContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -48,6 +48,12 @@ export default function NavBar() {
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           {/* Logo/Brand */}
           <div className="flex items-center space-x-4">
+            <button
+              className="md:hidden text-orange-400 focus:outline-none"
+              onClick={onMenuClick}
+            >
+              <Bars3Icon className="w-6 h-6" />
+            </button>
             <h1 className="text-xl font-bold text-white">Dashboard</h1>
           </div>
 
@@ -59,7 +65,7 @@ export default function NavBar() {
               className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-purple-700/60 transition-colors duration-200"
             >
               <UserCircleIcon className="w-8 h-8 text-orange-400" />
-              <div className="text-left">
+              <div className="text-left hidden sm:block">
                 <p className="text-md text-white">{user}</p>
               </div>
               <ChevronDownIcon className={`w-4 h-4 text-orange-400 transition-transform duration-200 ${
