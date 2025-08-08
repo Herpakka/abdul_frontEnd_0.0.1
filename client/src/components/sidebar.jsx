@@ -20,7 +20,8 @@ export default function SideBar({ selected_chat, onChatSelect }) {
     setNewChat,
     handleChatDelete
   } = useContext(ChatContext);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [chatHistory, setChatHistory] = useState(chatList || []);
   const [selectedChat, setSelectedChat] = useState(selected_chat || null);
   const [hoveredChat, setHoveredChat] = useState(null);
@@ -31,6 +32,25 @@ export default function SideBar({ selected_chat, onChatSelect }) {
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (!mobile) {
+        setIsOpen(true);
+      } else {
+        setIsOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Initial check
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const handleChatSelect = (chat) => {
     console.log(`(sidebar) Selected chat: ${chat.title} (ID: ${chat.id})`);
@@ -88,8 +108,9 @@ export default function SideBar({ selected_chat, onChatSelect }) {
     <>
       {/* Sidebar */}
       <aside
-        className={`left-0 top-16 h-full] bg-gradient-to-b from-purple-900/95 via-purple-800/95 to-purple-900/95 backdrop-blur-xl border-r border-purple-600/40 shadow-xl shadow-purple-900/30 transition-all duration-300 z-40 ${isOpen ? 'w-80' : 'w-16'
-          }`}
+        className={`bg-gradient-to-b from-purple-900/95 via-purple-800/95 to-purple-900/95 backdrop-blur-xl border-r border-purple-600/40 shadow-xl shadow-purple-900/30 transition-all duration-300 z-40
+          ${isMobile ? 'fixed h-full' : 'relative'}
+          ${isOpen ? 'w-80' : 'w-0 md:w-16'}`}
       >
         {/* Top Bar with Toggle and New Chat Button */}
         <div className="p-4 flex items-center gap-3">
@@ -204,9 +225,9 @@ export default function SideBar({ selected_chat, onChatSelect }) {
       </aside>
 
       {/* Overlay for mobile when open */}
-      {isOpen && (
+      {isMobile && isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm lg:hidden z-30"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm md:hidden z-30"
           onClick={toggleSidebar}
         ></div>
       )}

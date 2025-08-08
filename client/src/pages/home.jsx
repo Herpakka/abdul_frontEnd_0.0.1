@@ -302,18 +302,18 @@ export default function HomePage() {
                 handleChatDelete,
                 handleChatRename,
             }}>
-                <div className="flex h-screen w-screen overflow-hidden">
+                <div className="flex flex-col lg:flex-row h-screen w-screen overflow-hidden bg-gray-100">
                     {/* Sidebar */}
-                    <SideBar
-                        onChatSelect={handleChatSelect}
-                    />
+                    <div className="lg:flex-shrink-0">
+                        <SideBar onChatSelect={handleChatSelect} />
+                    </div>
 
                     {/* Main content area */}
                     <div className="flex flex-col flex-1 min-w-0">
                         {/* Navbar */}
                         <NavBar />
                         {/* Content */}
-                        <div className="flex-1 overflow-hidden">
+                        <div className="flex-1 overflow-y-auto">
                             <ChatRoomPage />
                         </div>
                     </div>
