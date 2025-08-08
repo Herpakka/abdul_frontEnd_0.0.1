@@ -25,6 +25,13 @@ export default function HomePage() {
     const [chatList, setChatList] = useState([]);
     const [currentChat, setCurrentChat] = useState(null);
     const [chatHistory, setChatHistory] = useState([]);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    useEffect(() => {
+        if (window.innerWidth >= 768) {
+            setIsSidebarOpen(true);
+        }
+    }, []);
 
     const handleLogout = () => {
         try {
@@ -306,12 +313,14 @@ export default function HomePage() {
                     {/* Sidebar */}
                     <SideBar
                         onChatSelect={handleChatSelect}
+                        isOpen={isSidebarOpen}
+                        setIsOpen={setIsSidebarOpen}
                     />
 
                     {/* Main content area */}
                     <div className="flex flex-col flex-1 min-w-0">
                         {/* Navbar */}
-                        <NavBar />
+                        <NavBar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
                         {/* Content */}
                         <div className="flex-1 overflow-hidden">
                             <ChatRoomPage />
