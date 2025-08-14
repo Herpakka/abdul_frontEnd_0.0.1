@@ -302,7 +302,7 @@ export default function HomePage() {
                 handleChatDelete,
                 handleChatRename,
             }}>
-                <div className="flex flex-col lg:flex-row h-screen w-screen overflow-hidden bg-gray-100">
+                <div className="flex flex-col lg:flex-row min-h-screen w-screen bg-gray-100">
                     {/* Sidebar */}
                     <div className="lg:flex-shrink-0">
                         <SideBar onChatSelect={handleChatSelect} />

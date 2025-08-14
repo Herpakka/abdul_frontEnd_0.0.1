@@ -60,7 +60,7 @@ function AppRoutes() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen w-screen overflow-hidden">
+    <div className="flex flex-col lg:flex-row min-h-screen w-screen">
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
